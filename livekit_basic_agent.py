@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 from livekit import agents
 from livekit.agents import Agent, AgentSession, RunContext
 from livekit.agents.llm import function_tool
-from livekit.plugins import openai, deepgram, silero
+from livekit.plugins import openai, deepgram, silero, groq
 from datetime import datetime
 import os
 
@@ -179,7 +179,7 @@ async def entrypoint(ctx: agents.JobContext):
     # Configure the voice pipeline with the essentials
     session = AgentSession(
         stt=deepgram.STT(model="nova-2"),
-        llm=openai.LLM(model=os.getenv("LLM_CHOICE", "gpt-4.1-mini")),
+        llm=groq.LLM(model=os.getenv("LLM_CHOICE", "llama-3.3-70b-versatile")),
         tts=openai.TTS(voice="echo"),
         vad=silero.VAD.load(),
     )

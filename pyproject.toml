@@ -10,6 +10,7 @@ dependencies = [
     "livekit-plugins-deepgram>=1.0.0",
     "livekit-plugins-silero>=1.0.0",
     "livekit-plugins-turn-detector>=1.0.0",
+    "livekit-plugins-groq>=1.0.0",
     "python-dotenv>=1.0.0",
 ]
 
