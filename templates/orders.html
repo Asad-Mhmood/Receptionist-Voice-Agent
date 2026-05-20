@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kiro's Kitchen — Staff Dashboard</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f5f5f5;
+      color: #333;
+    }
+
+    header {
+      background: #e63946;
+      color: white;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    header h1 { font-size: 1.4rem; }
+
+    #last-updated {
+      font-size: 0.8rem;
+      opacity: 0.85;
+    }
+
+    main {
+      padding: 24px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    #order-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 10px;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      border-left: 5px solid #ccc;
+      transition: border-color 0.3s;
+    }
+
+    .card.new        { border-color: #e63946; }
+    .card.preparing  { border-color: #f4a261; }
+    .card.ready      { border-color: #2a9d8f; }
+    .card.done       { border-color: #aaa; opacity: 0.6; }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .order-id   { font-weight: 700; font-size: 1rem; }
+    .customer   { font-size: 0.9rem; color: #555; margin-bottom: 8px; }
+    .timestamp  { font-size: 0.75rem; color: #999; }
+
+    .items { margin: 10px 0; }
+    .item-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.88rem;
+      padding: 3px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .total {
+      font-weight: 700;
+      text-align: right;
+      margin-top: 8px;
+      font-size: 0.95rem;
+    }
+
+    .status-badge {
+      font-size: 0.75rem;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .badge-new       { background: #fde8ea; color: #e63946; }
+    .badge-preparing { background: #fef3e2; color: #f4a261; }
+    .badge-ready     { background: #e0f5f3; color: #2a9d8f; }
+    .badge-done      { background: #eee;    color: #888; }
+
+    .actions {
+      display: flex;
+      gap: 6px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 5px 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .btn-prepare { background: #f4a261; color: white; }
+    .btn-ready   { background: #2a9d8f; color: white; }
+    .btn-done    { background: #aaa;    color: white; }
+
+    #empty {
+      text-align: center;
+      color: #aaa;
+      margin-top: 60px;
+      font-size: 1.1rem;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🍕 Kiro's Kitchen — Staff Dashboard</h1>
+  <span id="last-updated">Auto-refreshes every 5s</span>
+</header>
+
+<main>
+  <div id="order-grid">
+    {% if orders %}
+      {% for order in orders %}
+      <div class="card {{ order.status }}" id="card-{{ order.id }}">
+        <div class="card-header">
+          <span class="order-id">Order #{{ order.id }}</span>
+          <span class="status-badge badge-{{ order.status }}">{{ order.status }}</span>
+        </div>
+        <div class="customer">👤 {{ order.customer }}</div>
+        <div class="timestamp">🕐 {{ order.created_at }}</div>
+        <div class="items">
+          {% for item in order.order_items %}
+          <div class="item-row">
+            <span>{{ item.quantity }}× {{ item.name }}</span>
+            <span>${{ "%.2f"|format(item.price * item.quantity) }}</span>
+          </div>
+          {% endfor %}
+        </div>
+        <div class="total">Total: ${{ "%.2f"|format(order.total) }}</div>
+        <div class="actions">
+          {% if order.status == "new" %}
+            <button class="btn btn-prepare" onclick="setStatus({{ order.id }}, 'preparing')">Start Preparing</button>
+          {% elif order.status == "preparing" %}
+            <button class="btn btn-ready" onclick="setStatus({{ order.id }}, 'ready')">Mark Ready</button>
+          {% elif order.status == "ready" %}
+            <button class="btn btn-done" onclick="setStatus({{ order.id }}, 'done')">Mark Done</button>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <div id="empty">No orders yet. Waiting for customers...</div>
+    {% endif %}
+  </div>
+</main>
+
+<script>
+  // Auto-refresh the page every 5 seconds to show new orders
+  setInterval(() => {
+    location.reload();
+  }, 5000);
+
+  // Update last-refreshed time
+  document.getElementById("last-updated").textContent =
+    "Last updated: " + new Date().toLocaleTimeString();
+
+  async function setStatus(orderId, status) {
+    await fetch(`/orders/${orderId}/status?status=${status}`, { method: "POST" });
+    location.reload();
+  }
+</script>
+
+</body>
+</html>

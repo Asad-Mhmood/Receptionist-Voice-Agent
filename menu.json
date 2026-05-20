@@ -1,0 +1,24 @@
+{
+    "categories": {
+        "burgers": [
+            {"id": "b1", "name": "Classic Burger", "price": 8.99, "description": "Beef patty, lettuce, tomato, cheese"},
+            {"id": "b2", "name": "BBQ Burger", "price": 10.99, "description": "Beef patty, BBQ sauce, onion rings, cheddar"},
+            {"id": "b3", "name": "Chicken Burger", "price": 9.49, "description": "Crispy chicken, mayo, pickles, lettuce"}
+        ],
+        "pizzas": [
+            {"id": "p1", "name": "Margherita", "price": 11.99, "description": "Tomato sauce, mozzarella, fresh basil"},
+            {"id": "p2", "name": "Pepperoni", "price": 13.99, "description": "Tomato sauce, mozzarella, pepperoni"},
+            {"id": "p3", "name": "BBQ Chicken Pizza", "price": 14.99, "description": "BBQ sauce, chicken, red onion, mozzarella"}
+        ],
+        "sides": [
+            {"id": "s1", "name": "French Fries", "price": 3.49, "description": "Crispy golden fries"},
+            {"id": "s2", "name": "Onion Rings", "price": 3.99, "description": "Battered and fried onion rings"},
+            {"id": "s3", "name": "Coleslaw", "price": 2.49, "description": "Creamy homemade coleslaw"}
+        ],
+        "drinks": [
+            {"id": "d1", "name": "Coca Cola", "price": 1.99, "description": "330ml can"},
+            {"id": "d2", "name": "Orange Juice", "price": 2.49, "description": "Fresh squeezed"},
+            {"id": "d3", "name": "Water", "price": 0.99, "description": "Still water 500ml"}
+        ]
+    }
+}
