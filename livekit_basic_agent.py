@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 from livekit import agents
 from livekit.agents import Agent, AgentSession, RunContext
 from livekit.agents.llm import function_tool
-from livekit.plugins import openai, deepgram, silero, groq
+from livekit.plugins import deepgram, silero, groq
 from datetime import datetime
 import os
 
@@ -96,8 +96,12 @@ class Assistant(Agent):
         self.bookings = []
 
     @function_tool
-    async def get_current_date_and_time(self, context: RunContext) -> str:
-        """Get the current date and time."""
+    async def get_current_date_and_time(self, context: RunContext, timezone: str = "local") -> str:
+        """Get the current date and time.
+
+        Args:
+            timezone: The timezone to use (default: 'local')
+        """
         current_datetime = datetime.now().strftime("%B %d, %Y at %I:%M %p")
         return f"The current date and time is {current_datetime}"
 
@@ -180,7 +184,7 @@ async def entrypoint(ctx: agents.JobContext):
     session = AgentSession(
         stt=deepgram.STT(model="nova-2"),
         llm=groq.LLM(model=os.getenv("LLM_CHOICE", "llama-3.3-70b-versatile")),
-        tts=openai.TTS(voice="echo"),
+        tts=deepgram.TTS(model="aura-2-thalia-en"),
         vad=silero.VAD.load(),
     )
 
